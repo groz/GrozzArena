@@ -12,5 +12,3 @@ function MyCombatFrame_OnEvent(self, event, ...)
 		print("Entering combat")
 	end
 end
-
--- And some comments
