@@ -1,16 +1,18 @@
-if not MyCombatFrame then
-	CreateFrame("Frame", "MyCombatFrame", UIParent)
+if not MyFrame then
+	CreateFrame("Frame", "MyFrame", UIParent)
 end
 
-MyCombatFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
-MyCombatFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
+MyFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+MyFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 
-function MyCombatFrame_OnEvent(self, event, ...)
+function MyFrame_OnEvent(self, event, ...)
 	if event == "PLAYER_REGEN_ENABLED" then
 		print("Leaving combat")
+		local body = GetMacroBody(1)
+		print(body)
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		print("Entering combat")
 	end
 end
 
-MyCombatFrame:SetScript("OnEvent", MyCombatFrame_OnEvent)
+MyFrame:SetScript("OnEvent", MyFrame_OnEvent)
