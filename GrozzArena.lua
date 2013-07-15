@@ -58,8 +58,9 @@ end
 function GrozzArena.SetArenaHooks()
 	if GrozzArena.hooksSet then return end
 	
-	--for i = 1,5 do
-		local arenaFrameName = "PlayerFrame" --"ArenaEnemyFrame"..i
+	for i = 1,5 do
+		--local arenaFrameName = "PlayerFrame"
+		local arenaFrameName = "ArenaEnemyFrame"..i
 		local arenaFrame = _G[arenaFrameName]
 
 		if (arenaFrame ~= nil) then
@@ -68,9 +69,10 @@ function GrozzArena.SetArenaHooks()
 		else
 			print(arenaFrameName .. " not found")
 		end
-		
-		GrozzArena.hooksSet = true
-	--end
+				
+	end
+	
+	GrozzArena.hooksSet = true
 end
 
 ----------------------------------------------------------------------------------------------------------
@@ -82,15 +84,14 @@ GrozzArena.eventHandler:RegisterEvent("PLAYER_LOGIN")
 GrozzArena.eventHandler:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
 
 GrozzArena.eventHandler:SetScript("OnEvent", function(self, event, arg1, ...)
-	
-	if event == "ADDON_LOADED" then
+	if event == "ADDON_LOADED" then	
 		if arg1 == "GrozzArena" then
 			print("GrozzArena loaded")
 			print(macrosToUpdate)
 			macrosToUpdate = macrosToUpdate or {}
 			GrozzArena.macrosToUpdate = macrosToUpdate
 		end
-	--else --if (event == "ARENA_PREP_OPPONENT_SPECIALIZATIONS") then
+	else if (event == "ARENA_PREP_OPPONENT_SPECIALIZATIONS") then
 		GrozzArena.SetArenaHooks()
 	end	
 end)
