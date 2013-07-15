@@ -1,9 +1,9 @@
 local GrozzArena = { }
 GrozzArena.eventHandler = CreateFrame("Frame")
 GrozzArena.eventHandler.events = { }
-GrozzArena.macrosToUpdate = macrosToUpdate or {}
 GrozzArena.consoleCommands = {}
 GrozzArena.hooksSet = false
+GrozzArena.isBlizzardUIReady = false
 
 ----------------------------------------------------------------------------------------------------------
 -- MAIN
@@ -85,14 +85,18 @@ GrozzArena.eventHandler:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
 
 GrozzArena.eventHandler:SetScript("OnEvent", function(self, event, arg1, ...)
 	if event == "ADDON_LOADED" then	
-		if arg1 == "GrozzArena" then
-			print("GrozzArena loaded")
-			print(macrosToUpdate)
+		if arg1 == "Blizzard_ArenaUI" then
+			GrozzArena.isBlizzardUIReady = true
+			print("Blizzard_ArenaUI loaded")
+		elseif arg1 == "GrozzArena" then			
 			macrosToUpdate = macrosToUpdate or {}
 			GrozzArena.macrosToUpdate = macrosToUpdate
+			print("GrozzArena loaded")
 		end
 	else if (event == "ARENA_PREP_OPPONENT_SPECIALIZATIONS") then
-		GrozzArena.SetArenaHooks()
+		if GrozzArena.isBlizzardUIReady then
+			GrozzArena.SetArenaHooks()
+		end
 	end	
 end)
 
