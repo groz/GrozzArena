@@ -1,28 +1,50 @@
 local GrozzArena = { }
 GrozzArena.eventHandler = CreateFrame("Frame")
 GrozzArena.eventHandler.events = { }
+GrozzArena.macrosToUpdate = { "myMacro1", "myMacro2" }
 
 ----------------------------------------------------------------------------------------------------------
 -- MAIN
 ----------------------------------------------------------------------------------------------------------
+function GrozzArena.AddMacroToUpdate(macroName)
+	GrozzArena.macrosToUpdate:insert(macroName)
+	print("Added macro "..macroName.." to update for arena targets")
+end
+
 function GrozzArena.UpdateArenaTargetInMacro(macroName, arenaTarget)
 	local macroIndex = GetMacroIndexByName(macroName)
-	local macroBody = GetMacroBody(macroIndex)
-	local newMacroBody = macroBody:gsub("arena(%d+)", arenaTarget)
 	
-	EditMacro(macroIndex, macroName, nil, newMacroBody)
+	if  macroIndex and macroIndex ~= 0 then
 	
-	print("Macro "..macroName.." retargeted to "..arenaTarget)
+		local macroBody = GetMacroBody(macroIndex)
+		local newMacroBody = macroBody:gsub("arena(%d+)", arenaTarget)
+		
+		EditMacro(macroIndex, macroName, nil, newMacroBody)
+		
+		print("Macro '"..macroName.."' retargeted to "..arenaTarget)
+	else
+		print("Macro '"..macroName.."' not found. Skipped updating.")
+	end
 end
 
 function GrozzArena.ArenaFrameClickHandler(self, button)
-	print(self:GetName() .. " clicked by " .. button)
-
-	local frameName = "arena1"
-	local macroName = "myMacro1"
+	if button ~= "RightButton" then
+		return
+	end
 	
-	if button == "RightButton" then
-		GrozzArena.UpdateArenaTargetInMacro(macroName, "arena1")
+	--local frameName = self:GetName()	
+	local frameName = "ArenaEnemyFrame1"
+	
+	print("Clicked frame #"..frameName)
+	
+	local arenaNum = frameName:match("%d+")
+	
+	if arenaNum then
+		for i, macroName in ipairs(GrozzArena.macrosToUpdate) do
+			GrozzArena.UpdateArenaTargetInMacro(macroName, "arena"..arenaNum)
+		end
+	else
+		print("Couldn't parse arenaNum in "..frameName)
 	end
 end
 
