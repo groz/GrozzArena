@@ -3,7 +3,6 @@
 ## Version: 0.1
 ## Author: Tagir Magomedov
 ## Notes: This is an addon that lets easily swap arena targets in macros
-## LoadOnDemand: 1
-## LoadWith: Blizzard_ArenaUI
+## SavedVariablesPerCharacter: macrosToUpdate
 
 GrozzArena.lua
