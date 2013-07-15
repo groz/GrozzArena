@@ -1,14 +1,20 @@
 local GrozzArena = { }
 GrozzArena.eventHandler = CreateFrame("Frame")
 GrozzArena.eventHandler.events = { }
-GrozzArena.macrosToUpdate = { "myMacro1", "myMacro2" }
+GrozzArena.macrosToUpdate = {}
+GrozzArena.consoleCommands = {}
 
 ----------------------------------------------------------------------------------------------------------
 -- MAIN
 ----------------------------------------------------------------------------------------------------------
 function GrozzArena.AddMacroToUpdate(macroName)
-	GrozzArena.macrosToUpdate:insert(macroName)
+	GrozzArena.macrosToUpdate[macroName] = true
 	print("Added macro "..macroName.." to update for arena targets")
+end
+
+function GrozzArena.RemoveMacroToUpdate(macroName)
+	GrozzArena.macrosToUpdate[macroName] = nil
+	print("Removed macro "..macroName.." from updates for arena targets")
 end
 
 function GrozzArena.UpdateArenaTargetInMacro(macroName, arenaTarget)
@@ -40,7 +46,7 @@ function GrozzArena.ArenaFrameClickHandler(self, button)
 	local arenaNum = frameName:match("%d+")
 	
 	if arenaNum then
-		for i, macroName in ipairs(GrozzArena.macrosToUpdate) do
+		for macroName,_ in pairs(GrozzArena.macrosToUpdate) do
 			GrozzArena.UpdateArenaTargetInMacro(macroName, "arena"..arenaNum)
 		end
 	else
@@ -77,3 +83,26 @@ GrozzArena.eventHandler:SetScript("OnEvent", function(self, event, ...)
 		GrozzArena.SetArenaHooks()
 	--end
 end)
+
+----------------------------------------------------------------------------------------------------------
+-- SLASH COMMANDS
+----------------------------------------------------------------------------------------------------------
+function GrozzArena.consoleCommands.add(macroName)
+	GrozzArena.AddMacroToUpdate(macroName)
+end
+
+function GrozzArena.consoleCommands.remove(macroName)
+	GrozzArena.RemoveMacroToUpdate(macroName)
+end
+
+SLASH_GROZZARENA1 = "/ga"
+SLASH_GROZZARENA2 = "/grozzarena"
+
+SlashCmdList["GROZZARENA"] = function(msg, editbox)
+	local cmd,param = msg:match("(%w-) (.*)")
+	local consoleCmdHandler = GrozzArena.consoleCommands[cmd]
+	
+	if consoleCmdHandler then
+		consoleCmdHandler(param)
+	end
+end
