@@ -1,18 +1,43 @@
-if not MyFrame then
-	CreateFrame("Frame", "MyFrame", UIParent)
-end
+----------------------------------------------------------------------------------------------------------
+-- MAIN
+----------------------------------------------------------------------------------------------------------
 
-MyFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
-MyFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
-
-function MyFrame_OnEvent(self, event, ...)
-	if event == "PLAYER_REGEN_ENABLED" then
-		print("Leaving combat")
-		local body = GetMacroBody(1)
-		print(body)
-	elseif event == "PLAYER_REGEN_DISABLED" then
-		print("Entering combat")
+local function ArenaFrameClickHandler(self, button)
+	if button == "RightButton" then
+		print("RIGHT BUTTON")
+	else	
+		print(self:GetName() .. " clicked with " .. button)
 	end
 end
 
-MyFrame:SetScript("OnEvent", MyFrame_OnEvent)
+local function SetArenaHooks()
+	for i = 1,5 do
+		local arenaFrameName = "ArenaEnemyFrame"..i
+		local arenaFrame = _G[arenaFrameName]
+
+		if (arenaFrame ~= nil) then
+			print("Hooking "..arenaFrameName)						
+			arenaFrame:HookScript("OnClick", ArenaFrameClickHandler)
+		else
+			print(arenaFrameName .. " not found")
+		end
+		
+	end
+end
+
+----------------------------------------------------------------------------------------------------------
+-- HOOKING EVENTS
+----------------------------------------------------------------------------------------------------------
+local eventHandler = CreateFrame("Frame")
+
+eventHandler:RegisterEvent("PLAYER_LOGIN")
+eventHandler:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
+
+eventHandler:SetScript("OnEvent", function(self, event, ...)
+	print(event)
+	
+	--if (event == "ARENA_PREP_OPPONENT_SPECIALIZATIONS") then
+		SetArenaHooks()
+	--end
+end)
+
