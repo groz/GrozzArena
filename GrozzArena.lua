@@ -4,9 +4,6 @@ GrozzArena.eventHandler.events = { }
 GrozzArena.consoleCommands = {}
 GrozzArena.hooksSet = false
 
-GrozzArena.localMacrosToUpdate = localMacrosToUpdate or {}
-GrozzArena.globalMacrosToUpdate = globalMacrosToUpdate or {}
-
 ----------------------------------------------------------------------------------------------------------
 -- MAIN
 ----------------------------------------------------------------------------------------------------------
@@ -14,7 +11,7 @@ function GrozzArena.AddMacroToUpdate(macroName)
 	local macroIndex = GetMacroIndexByName(macroName)
 	
 	if  macroIndex and macroIndex ~= 0 then
-		if macroIndex <= 36 then
+		if macroIndex > 36 then
 			GrozzArena.localMacrosToUpdate[macroName] = true
 			print("Added local macro "..macroName.." to update for arena targets")
 		else
@@ -108,13 +105,14 @@ GrozzArena.eventHandler:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
 
 GrozzArena.eventHandler:SetScript("OnEvent", function(self, event, arg1, ...)	
 	if event == "ADDON_LOADED" then	
-		print(arg1)
+		--print(arg1)
 		if arg1 == "Blizzard_ArenaUI" then
-			print("Blizzard_ArenaUI loaded")
+			--print("Blizzard_ArenaUI loaded")
 		elseif arg1 == "GrozzArena" then
 			GrozzArena.localMacrosToUpdate = localMacrosToUpdate or {}
 			GrozzArena.globalMacrosToUpdate = globalMacrosToUpdate or {}
-			print("GrozzArena loaded")
+			localMacrosToUpdate = GrozzArena.localMacrosToUpdate
+			globalMacrosToUpdate = GrozzArena.globalMacrosToUpdate
 		end
 	elseif (event == "ARENA_PREP_OPPONENT_SPECIALIZATIONS") then
 		GrozzArena.SetArenaHooks()
@@ -163,14 +161,12 @@ GrozzArena.consoleCommands["5"] = function()
 end
 
 GrozzArena.consoleCommands.help = function()
-	print([[
-GrozzArena	
-Usage:
-	show - shows all tracked macros
-	add <macro name> - starts tracking macro
-	remove <macro name> - stops tracking macro
-	# - changes all macros to point to arena#
-	left-click on arena prep frame - points all macros to clicked target
+	print([[GrozzArena /ga
+show - shows all tracked macros
+add <macro name> - starts tracking macro
+remove <macro name> - stops tracking macro
+# - points all macros to arena#
+left-click on arena prep frame - points all macros to clicked target
 ]])
 end
 
@@ -185,7 +181,7 @@ SlashCmdList["GROZZARENA"] = function(msg, editbox)
 	local consoleCmdHandler = GrozzArena.consoleCommands[cmd]
 	
 	if consoleCmdHandler then
-		print("GrozzArena: "..cmd)
+		--print("GrozzArena: "..cmd)
 		consoleCmdHandler(param)
 	else
 		print("GrozzArena: Command '"..cmd.."' is not supported")
