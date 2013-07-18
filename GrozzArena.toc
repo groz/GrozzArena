@@ -3,6 +3,7 @@
 ## Version: 1.0b
 ## Author: Tagir Magomedov
 ## Notes: This is an addon that lets easily swap arena targets in macros
-## SavedVariablesPerCharacter: macrosToUpdate
+## SavedVariables: globalMacrosToUpdate
+## SavedVariablesPerCharacter: localMacrosToUpdate
 
 GrozzArena.lua
