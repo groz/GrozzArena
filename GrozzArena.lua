@@ -76,7 +76,7 @@ function GrozzArena.ArenaFrameClickHandler(self, button)
 end
 
 function GrozzArena.SetArenaHooks()
-	if GrozzArena.hooksSet then return end
+	--if GrozzArena.hooksSet then return end
 	
 	for i = 1,5 do
 		--local arenaFrameName = "ArenaEnemyFrame"..i
@@ -92,7 +92,7 @@ function GrozzArena.SetArenaHooks()
 
 	end
 	
-	GrozzArena.hooksSet = true
+	--GrozzArena.hooksSet = true
 end
 
 ----------------------------------------------------------------------------------------------------------
@@ -140,24 +140,10 @@ function GrozzArena.consoleCommands.show()
 	end
 end
 
-GrozzArena.consoleCommands["1"] = function() 
-	GrozzArena.resetMacros(1);
-end
-
-GrozzArena.consoleCommands["2"] = function()
-	GrozzArena.resetMacros(2);
-end
-
-GrozzArena.consoleCommands["3"] = function() 
-	GrozzArena.resetMacros(3);
-end
-
-GrozzArena.consoleCommands["4"] = function() 
-	GrozzArena.resetMacros(4);
-end
-
-GrozzArena.consoleCommands["5"] = function() 
-	GrozzArena.resetMacros(5);
+for i=1,5 do
+	GrozzArena.consoleCommands[tostring(i)] = function()
+		GrozzArena.resetMacros(i);
+	end
 end
 
 GrozzArena.consoleCommands.help = function()
