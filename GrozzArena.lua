@@ -105,14 +105,27 @@ GrozzArena.eventHandler:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
 
 GrozzArena.eventHandler:SetScript("OnEvent", function(self, event, arg1, ...)	
 	if event == "ADDON_LOADED" then	
-		--print(arg1)
-		if arg1 == "Blizzard_ArenaUI" then
+		local addonName = arg1
+		if addonName == "Blizzard_ArenaUI" then
 			--print("Blizzard_ArenaUI loaded")
-		elseif arg1 == "GrozzArena" then
+		elseif addonName == "GrozzArena" then
+			print("GrozzArena loaded. Type /ga for help.")
 			GrozzArena.localMacrosToUpdate = localMacrosToUpdate or {}
 			GrozzArena.globalMacrosToUpdate = globalMacrosToUpdate or {}
 			localMacrosToUpdate = GrozzArena.localMacrosToUpdate
 			globalMacrosToUpdate = GrozzArena.globalMacrosToUpdate
+		elseif addonName == "Blizzard_CompactRaidFrames" then
+			print("GrozzArena: Blizzard_CompactRaidRames loaded, hooking sort function...")
+			-- answers the question "is t1 before t2?"
+			CompactRaidFrameContainer.flowSortFunc = function(t1, t2) 
+				if UnitIsUnit(t1,"player") then
+					return true 	-- puts t1(player before t2
+				elseif UnitIsUnit(t2,"player") then
+					return false  	-- puts t2(player) before t1
+				else
+					return t1 < t2 	-- puts party1 before party2
+				end
+			end
 		end
 	elseif (event == "ARENA_PREP_OPPONENT_SPECIALIZATIONS") then
 		GrozzArena.SetArenaHooks()
