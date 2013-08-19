@@ -3,6 +3,16 @@ GrozzArena.eventHandler = CreateFrame("Frame")
 GrozzArena.eventHandler.events = { }
 GrozzArena.consoleCommands = {}
 GrozzArena.hooksSet = false
+GrozzArena.debugPrintEnabled = false
+
+----------------------------------------------------------------------------------------------------------
+-- UTILITY
+----------------------------------------------------------------------------------------------------------
+function DebugPrint(arg)
+	if (GrozzArena.debugPrintEnabled) then
+		print(arg);
+	end
+end
 
 ----------------------------------------------------------------------------------------------------------
 -- MAIN
@@ -13,26 +23,26 @@ function GrozzArena.AddMacroToUpdate(macroName)
 	if  macroIndex and macroIndex ~= 0 then
 		if macroIndex > 36 then
 			GrozzArena.localMacrosToUpdate[macroName] = true
-			print("Added local macro "..macroName.." to update for arena targets")
+			DebugPrint("Added local macro "..macroName.." to update for arena targets")
 		else
 			GrozzArena.globalMacrosToUpdate[macroName] = true
-			print("Added global macro "..macroName.." to update for arena targets")
+			DebugPrint("Added global macro "..macroName.." to update for arena targets")
 		end
 		
 	else
-		print("Couldn't find macro "..macroName)
+		DebugPrint("Couldn't find macro "..macroName)
 	end	
 end
 
 function GrozzArena.RemoveMacroToUpdate(macroName)
 	if GrozzArena.localMacrosToUpdate[macroName] then
 		GrozzArena.localMacrosToUpdate[macroName] = nil
-		print("Removed local macro "..macroName.." from updates for arena targets")
+		DebugPrint("Removed local macro "..macroName.." from updates for arena targets")
 	elseif GrozzArena.globalMacrosToUpdate[macroName] then
 		GrozzArena.globalMacrosToUpdate[macroName] = nil
-		print("Removed global macro "..macroName.." from updates for arena targets")
+		DebugPrint("Removed global macro "..macroName.." from updates for arena targets")
 	else
-		print("Macro "..macroName.." isn't tracked. Removal failed")
+		DebugPrint("Macro "..macroName.." isn't tracked. Removal failed")
 	end
 end
 
@@ -56,22 +66,22 @@ function GrozzArena.UpdateArenaTargetInMacro(macroName, arenaTarget)
 		
 		EditMacro(macroIndex, macroName, nil, newMacroBody)
 		
-		print("Macro '"..macroName.."' retargeted to "..arenaTarget)
+		DebugPrint("Macro '"..macroName.."' retargeted to "..arenaTarget)
 	else
-		print("Macro '"..macroName.."' not found. Skipped updating.")
+		DebugPrint("Macro '"..macroName.."' not found. Skipped updating.")
 	end
 end
 
 function GrozzArena.ArenaFrameClickHandler(self, button)
 	local frameName = self:GetName()
-	--print("Clicked frame "..frameName)
+	--DebugPrint("Clicked frame "..frameName)
 	
 	local arenaNum = frameName:match("%d+")
 	
 	if arenaNum then
 		GrozzArena.resetMacros(arenaNum)
 	else
-		print("Couldn't parse arenaNum in "..frameName)
+		DebugPrint("Couldn't parse arenaNum in "..frameName)
 	end
 end
 
@@ -84,10 +94,10 @@ function GrozzArena.SetArenaHooks()
 		local arenaFrame = _G[arenaFrameName]
 
 		if (arenaFrame ~= nil) then
-			print("Hooking "..arenaFrameName)
+			DebugPrint("Hooking "..arenaFrameName)
 			arenaFrame:HookScript("OnClick", GrozzArena.ArenaFrameClickHandler)
 		else
-			print(arenaFrameName .. " not found")
+			DebugPrint(arenaFrameName .. " not found")
 		end
 
 	end
@@ -107,15 +117,16 @@ GrozzArena.eventHandler:SetScript("OnEvent", function(self, event, arg1, ...)
 	if event == "ADDON_LOADED" then	
 		local addonName = arg1
 		if addonName == "Blizzard_ArenaUI" then
-			--print("Blizzard_ArenaUI loaded")
+			--DebugPrint("Blizzard_ArenaUI loaded")
+			GrozzArena.SetArenaHooks()
 		elseif addonName == "GrozzArena" then
 			print("GrozzArena loaded. Type /ga for help.")
 			GrozzArena.localMacrosToUpdate = localMacrosToUpdate or {}
 			GrozzArena.globalMacrosToUpdate = globalMacrosToUpdate or {}
 			localMacrosToUpdate = GrozzArena.localMacrosToUpdate
-			globalMacrosToUpdate = GrozzArena.globalMacrosToUpdate
+			globalMacrosToUpdate = GrozzArena.globalMacrosToUpdate			
 		elseif addonName == "Blizzard_CompactRaidFrames" then
-			print("GrozzArena: Blizzard_CompactRaidRames loaded, hooking sort function...")
+			DebugPrint("GrozzArena: Blizzard_CompactRaidRames loaded, hooking sort function...")
 			-- answers the question "is t1 before t2?"
 			CompactRaidFrameContainer.flowSortFunc = function(t1, t2) 
 				if UnitIsUnit(t1,"player") then
@@ -128,7 +139,7 @@ GrozzArena.eventHandler:SetScript("OnEvent", function(self, event, arg1, ...)
 			end
 		end
 	elseif (event == "ARENA_PREP_OPPONENT_SPECIALIZATIONS") then
-		GrozzArena.SetArenaHooks()
+		--GrozzArena.SetArenaHooks()
 	end	
 end)
 
@@ -145,11 +156,11 @@ end
 
 function GrozzArena.consoleCommands.show()
 	for key,_ in pairs(GrozzArena.localMacrosToUpdate) do 
-		print("Tracking macro "..key) 
+		DebugPrint("Tracking macro "..key) 
 	end
 	
 	for key,_ in pairs(GrozzArena.globalMacrosToUpdate) do 
-		print("Tracking macro "..key) 
+		DebugPrint("Tracking macro "..key) 
 	end
 end
 
@@ -157,6 +168,11 @@ for i=1,5 do
 	GrozzArena.consoleCommands[tostring(i)] = function()
 		GrozzArena.resetMacros(i);
 	end
+end
+
+function GrozzArena.consoleCommands.debug()
+	GrozzArena.debugPrintEnabled = not GrozzArena.debugPrintEnabled;
+	print("GrozzArena DebugPrintEnabled: "..tostring(GrozzArena.debugPrintEnabled));
 end
 
 GrozzArena.consoleCommands.help = function()
@@ -180,9 +196,9 @@ SlashCmdList["GROZZARENA"] = function(msg, editbox)
 	local consoleCmdHandler = GrozzArena.consoleCommands[cmd]
 	
 	if consoleCmdHandler then
-		--print("GrozzArena: "..cmd)
+		--DebugPrint("GrozzArena: "..cmd)
 		consoleCmdHandler(param)
 	else
-		print("GrozzArena: Command '"..cmd.."' is not supported")
+		DebugPrint("GrozzArena: Command '"..cmd.."' is not supported")
 	end
 end
