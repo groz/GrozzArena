@@ -66,7 +66,7 @@ function GrozzArena.UpdateArenaTargetInMacro(macroName, arenaTarget)
 		
 		EditMacro(macroIndex, macroName, nil, newMacroBody)
 		
-		DebugPrint("Macro '"..macroName.."' retargeted to "..arenaTarget)
+		print("Macro '"..macroName.."' retargeted to "..arenaTarget)
 	else
 		DebugPrint("Macro '"..macroName.."' not found. Skipped updating.")
 	end
@@ -124,7 +124,7 @@ GrozzArena.eventHandler:SetScript("OnEvent", function(self, event, arg1, ...)
 			GrozzArena.localMacrosToUpdate = localMacrosToUpdate or {}
 			GrozzArena.globalMacrosToUpdate = globalMacrosToUpdate or {}
 			localMacrosToUpdate = GrozzArena.localMacrosToUpdate
-			globalMacrosToUpdate = GrozzArena.globalMacrosToUpdate			
+			globalMacrosToUpdate = GrozzArena.globalMacrosToUpdate
 		elseif addonName == "Blizzard_CompactRaidFrames" then
 			DebugPrint("GrozzArena: Blizzard_CompactRaidRames loaded, hooking sort function...")
 			-- answers the question "is t1 before t2?"
@@ -177,6 +177,7 @@ end
 
 GrozzArena.consoleCommands.help = function()
 	print([[GrozzArena /ga
+debug - enables debug output
 show - shows all tracked macros
 add <macro name> - starts tracking macro
 remove <macro name> - stops tracking macro

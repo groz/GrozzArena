@@ -1,6 +1,6 @@
 ## Interface: 50300
 ## Title: Grozz's Arena Helper
-## Version: 1.0b
+## Version: 1.1b
 ## Author: Tagir Magomedov
 ## Notes: This is an addon that lets easily swap arena targets in macros
 ## SavedVariables: globalMacrosToUpdate
